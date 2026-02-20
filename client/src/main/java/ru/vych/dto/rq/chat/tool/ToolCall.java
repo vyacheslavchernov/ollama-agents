@@ -19,4 +19,13 @@ public class ToolCall {
      * Описание вызываемого инструмента
      */
     private ToolFunction function;
+
+
+    @Override
+    public String toString() {
+        return "ToolCall{" +
+                "id='" + id + '\'' +
+                ", function=" + function +
+                '}';
+    }
 }
