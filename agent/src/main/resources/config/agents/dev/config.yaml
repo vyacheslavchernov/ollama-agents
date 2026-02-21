@@ -1,0 +1,19 @@
+# Конфигурация агента разработчика
+agent:
+  # Имя агента
+  name: "Developer"
+
+  # Описание функций агента
+  description: "Agent for write code, refactor and etc."
+
+  # Модель, которая должна использоваться агентом
+  model: "qwen3:4b"
+
+  # Путь до системного промпта в папке ресурсов проекта
+  system_prompt: "config/agents/dev/system_prompt.md"
+
+  # Набор инструментов, который доступен агенту
+  toolset: [
+    "search_file", "read_text_file", "overwrite_text_file",
+    "create_and_write_text_file", "create_directory", "system_info"
+  ]

@@ -1,5 +1,7 @@
 package ru.vych.tools;
 
+import ru.vych.tools.entities.FileSearchResult;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -11,9 +13,11 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FileUtils {
-
-    public static final String WORKING_DIRECTORY = "C:\\llm-project";
+/**
+ * Набор методов, которые используются агентами
+ * как инструменты для работы с файловой системой
+ */
+public class FileTools {
 
     /**
      * Перезаписывает содержимое файла новым содержимым.
@@ -26,12 +30,10 @@ public class FileUtils {
         System.out.printf("=== TOOL CALL ===\nПерезапись файла `%s`. Будет перезаписано %s байт.\n", filePath, newContent.getBytes().length);
 
         try {
-            // Записываем новое содержимое в файл
             Files.write(Paths.get(filePath), newContent.getBytes());
             System.out.println("Успешно перезаписано\n\n\n");
             return "{status: Файл " + filePath + " успешно перезаписан}";
         } catch (IOException e) {
-            // Обработка ошибок (например, логирование)
             System.out.println("Ошибка при перезаписи файла: " + e.getMessage() + "\n\n\n");
             return "{status: Ошибка при перезаписи: " + e.getMessage() + "}";
         }
@@ -78,9 +80,7 @@ public class FileUtils {
     public static String readTextFileToString(String filePath) {
         System.out.printf("=== TOOL CALL ===\nЧтение файла %s\n\n\n", filePath);
         try {
-            // Читаем все строки из файла
             List<String> lines = Files.readAllLines(Paths.get(filePath));
-            // Объединяем строки в одну, добавляя переводы строк между ними
             return "{\"file\": \"" + filePath + "\", \"content\": " + String.join("\n", lines) + "}";
         } catch (IOException e) {
             return "{\"error\": Ошибка при чтении файла. Текст ошибки: " + e.getMessage() + "}";
@@ -103,13 +103,11 @@ public class FileUtils {
         try {
             Path path = Paths.get(filePath);
             if (!Files.exists(path)) {
-                // Создаем файл и записываем контент
                 Files.write(path, content.getBytes());
                 return "{status: Файл " + filePath + " успешно создан}";
             }
             return "{status: Файл " + filePath + " уже существует. Запись не произведена}";
         } catch (IOException e) {
-            // Обработка ошибок (например, логирование)
             System.err.println("Ошибка при создании файла: " + e.getMessage());
             return "{\"error\": Ошибка при создании файла. Текст ошибки: " + e.getMessage() + "}";
         }
@@ -130,7 +128,6 @@ public class FileUtils {
         try {
             Path path = Paths.get(directoryPath);
             if (!Files.exists(path)) {
-                // Создаем каталог
                 Files.createDirectory(path);
                 System.out.printf("Каталог `%s` успешно создан.\n\n\n", directoryPath);
                 return "{status: Каталог " + directoryPath + " успешно создан}";
@@ -140,7 +137,6 @@ public class FileUtils {
             }
 
         } catch (IOException e) {
-            // Обработка ошибок (например, логирование)
             System.err.println("Ошибка при создании каталога: " + e.getMessage() + "\n\n\n");
             return "{\"error\": Ошибка при создании каталога. Текст ошибки: " + e.getMessage() + "}";
         }
@@ -148,22 +144,17 @@ public class FileUtils {
 
     private static List<FileSearchResult> search(String directoryPath, String pattern, boolean recursive) {
         try {
-            // Проверяем, существует ли каталог
             Path directory = Paths.get(directoryPath);
             if (!Files.exists(directory) || !Files.isDirectory(directory)) {
                 throw new IllegalArgumentException("Указанный путь не является существующим каталогом: " + directoryPath);
             }
 
-            // Компилируем регулярное выражение
             Pattern regexPattern = Pattern.compile(pattern);
 
-            // Результат поиска
             List<FileSearchResult> foundFiles = new ArrayList<>();
 
-            // Обрабатываем каталог
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
                 for (Path entry : directoryStream) {
-                    // Пропускаем подкаталоги, если поиск не рекурсивный
                     if (Files.isDirectory(entry)) {
                         if (matchesPattern(entry.getFileName().toString(), regexPattern)) {
                             foundFiles.add(new FileSearchResult(entry.toAbsolutePath().toString(), null));
@@ -171,14 +162,12 @@ public class FileUtils {
                         if (!recursive) continue;
                     }
 
-                    // Проверяем совпадение с регулярным выражением
                     if (matchesPattern(entry.getFileName().toString(), regexPattern)) {
                         foundFiles.add(new FileSearchResult(entry.toAbsolutePath().toString(), null));
                     }
                 }
             }
 
-            // Если включена рекурсия, обрабатываем подкаталоги
             if (recursive) {
                 try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
                     for (Path entry : directoryStream) {
