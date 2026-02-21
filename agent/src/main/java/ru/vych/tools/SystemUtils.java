@@ -1,4 +1,4 @@
-package ru.vych;
+package ru.vych.tools;
 
 import java.io.File;
 import java.nio.file.FileSystems;

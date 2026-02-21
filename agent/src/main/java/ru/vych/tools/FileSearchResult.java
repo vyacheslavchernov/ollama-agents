@@ -1,4 +1,4 @@
-package ru.vych;
+package ru.vych.tools;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

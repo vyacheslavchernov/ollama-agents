@@ -1,4 +1,4 @@
-package ru.vych;
+package ru.vych.tools;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -29,7 +29,7 @@ public class FileUtils {
             // Записываем новое содержимое в файл
             Files.write(Paths.get(filePath), newContent.getBytes());
             System.out.println("Успешно перезаписано\n\n\n");
-            return "{status: Успешно перезаписано}";
+            return "{status: Файл " + filePath + " успешно перезаписан}";
         } catch (IOException e) {
             // Обработка ошибок (например, логирование)
             System.out.println("Ошибка при перезаписи файла: " + e.getMessage() + "\n\n\n");
@@ -84,6 +84,65 @@ public class FileUtils {
             return "{\"file\": \"" + filePath + "\", \"content\": " + String.join("\n", lines) + "}";
         } catch (IOException e) {
             return "{\"error\": Ошибка при чтении файла. Текст ошибки: " + e.getMessage() + "}";
+        }
+    }
+
+    /**
+     * Проверяет наличие файла. Если файла нет, создает его и записывает контент.
+     *
+     * @param filePath Путь к файлу
+     * @param content  Список строк для записи в файл
+     * @return true, если операция выполнена успешно, иначе false
+     */
+    public static String createFileIfNotExists(String filePath, String content) {
+        System.out.printf(
+                "=== TOOL CALL ===\nСоздание нового файла `%s`. Будет перезаписано %s байт.\n\n\n",
+                filePath, content.getBytes().length
+        );
+
+        try {
+            Path path = Paths.get(filePath);
+            if (!Files.exists(path)) {
+                // Создаем файл и записываем контент
+                Files.write(path, content.getBytes());
+                return "{status: Файл " + filePath + " успешно создан}";
+            }
+            return "{status: Файл " + filePath + " уже существует. Запись не произведена}";
+        } catch (IOException e) {
+            // Обработка ошибок (например, логирование)
+            System.err.println("Ошибка при создании файла: " + e.getMessage());
+            return "{\"error\": Ошибка при создании файла. Текст ошибки: " + e.getMessage() + "}";
+        }
+    }
+
+    /**
+     * Проверяет существование каталога. Если каталог не существует, создает его.
+     *
+     * @param directoryPath Путь к каталогу
+     * @return JSON-строка со статусом или ошибкой
+     */
+    public static String createDirectoryIfNotExists(String directoryPath) {
+        System.out.printf(
+                "=== TOOL CALL ===\nСоздание каталога `%s`\n",
+                directoryPath
+        );
+
+        try {
+            Path path = Paths.get(directoryPath);
+            if (!Files.exists(path)) {
+                // Создаем каталог
+                Files.createDirectory(path);
+                System.out.printf("Каталог `%s` успешно создан.\n\n\n", directoryPath);
+                return "{status: Каталог " + directoryPath + " успешно создан}";
+            } else {
+                System.out.printf("Каталог `%s` уже существует.\n\n\n", directoryPath);
+                return "{status: Каталог " + directoryPath + " уже существует}";
+            }
+
+        } catch (IOException e) {
+            // Обработка ошибок (например, логирование)
+            System.err.println("Ошибка при создании каталога: " + e.getMessage() + "\n\n\n");
+            return "{\"error\": Ошибка при создании каталога. Текст ошибки: " + e.getMessage() + "}";
         }
     }
 
