@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
  * Набор методов, которые используются агентами
  * как инструменты для работы с файловой системой
  */
+@SuppressWarnings("unused")
 public class FileTools {
 
     /**
@@ -47,7 +48,7 @@ public class FileTools {
      * @param recursive     флаг рекурсивного поиска
      * @return JSON-строка формата {"founded": [...], "error": "..."}
      */
-    public static String findFilesWithPattern(String directoryPath, String pattern, boolean recursive) {
+    public static String findFilesWithPattern(String directoryPath, String pattern, Boolean recursive) {
         System.out.printf("=== TOOL CALL ===\nПоиск в каталоге `%s` по паттерну `%s`, recursive = %s\n", directoryPath, pattern, recursive);
         List<FileSearchResult> searchResults = search(directoryPath, pattern, recursive);
 
@@ -187,9 +188,6 @@ public class FileTools {
         }
     }
 
-    /**
-     * Проверяет, соответствует ли имя файла регулярному выражению
-     */
     private static boolean matchesPattern(String fileName, Pattern pattern) {
         Matcher matcher = pattern.matcher(fileName);
         return matcher.matches();

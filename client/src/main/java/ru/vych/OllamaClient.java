@@ -254,6 +254,7 @@ public class OllamaClient {
      * @param capabilities множество возможностей по которым должен произойти отбор
      * @return список моделей подходящий под условия
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Model> getModelsByCapabilities(Set<ModelCapabilities> capabilities) {
         return availableModels().getModels().stream()
                 .filter(model -> {

@@ -1,0 +1,11 @@
+tool:
+  alias: "read_text_file"
+  name: "Read text file"
+  description: "Получить содержимое текстового файла. Если получить 
+  содержимое не удалось, то вернётся подробная ошибка."
+  parameters:
+    - parameter:
+        name: "filePath"
+        type: "string"
+        description: "Абсолютный путь к файлу в формате системы"
+  method: "ru.vych.tools.FileTools#readTextFileToString"

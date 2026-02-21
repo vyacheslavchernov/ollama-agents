@@ -1,0 +1,7 @@
+tool:
+  alias: "system_info"
+  name: "System info"
+  description: "Получить информацию о окружении и системе, 
+  а именно тип ОС, активного пользователя, домашнюю папку, 
+  разделители, время, локаль и другие."
+  method: "ru.vych.tools.SystemTools#collectSystemInfo"

@@ -1,0 +1,15 @@
+tool:
+  alias: "create_and_write_text_file"
+  name: "Create and write text file"
+  description: "Создать новый текстовый файл и записать в него данные. 
+  Перед созданием проверяется существует ли файл"
+  parameters:
+    - parameter:
+        name: "filePath"
+        type: "string"
+        description: "Абсолютный путь к файлу в формате системы"
+    - parameter:
+        name: "content"
+        type: "string"
+        description: "Новые данные, которыми будет перезаписан файл."
+  method: "ru.vych.tools.FileTools#createFileIfNotExists"

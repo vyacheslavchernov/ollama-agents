@@ -1,10 +1,10 @@
-package ru.vych.agents;
+package ru.vych.agent;
 
 import lombok.Getter;
 import ru.vych.OllamaClient;
-import ru.vych.agent.AbstractAgent;
-import ru.vych.tools.ToolRegistry;
-import ru.vych.utils.ConfigUtils;
+import ru.vych.agent.config.agent.AgentConfig;
+import ru.vych.agent.tools.ToolRegistry;
+import ru.vych.agent.utils.ConfigUtils;
 
 /**
  * Конфигурируемый универсальный агент.
@@ -16,9 +16,8 @@ public class ConfigurableAgent extends AbstractAgent {
     private final AgentConfig config;
 
     public ConfigurableAgent(OllamaClient client, AgentConfig config) {
-        super(client, client.getModelByName(config.getModel()));
+        super(client, client.getModelByName(config.getModel()), ToolRegistry.getToolsList(config.getToolset()));
         this.config = config;
-        toolset = ToolRegistry.getToolsList(config.getToolset());
-        system(ConfigUtils.loadFileContent("config/agents/dev/system_prompt.md"));
+        system(ConfigUtils.readFileContentFromResources(config.getSystemPrompt()));
     }
 }

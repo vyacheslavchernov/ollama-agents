@@ -1,7 +1,9 @@
 package ru.vych;
 
-import ru.vych.agents.AgentConfig;
-import ru.vych.agents.ConfigurableAgent;
+import ru.vych.agent.ConfigurableAgent;
+import ru.vych.agent.config.PathType;
+import ru.vych.agent.config.agent.AgentConfig;
+import ru.vych.agent.tools.ToolRegistry;
 import ru.vych.dto.rq.chat.ChatMessage;
 
 import java.util.Scanner;
@@ -9,10 +11,11 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         var client = new OllamaClient();
+        ToolRegistry.scanResourcesForConfigs("config/tools");
 
         var agent = new ConfigurableAgent(
                 client,
-                AgentConfig.loadFromFile("config/agents/dev/config.yaml")
+                AgentConfig.loadFromFile("config/agents/dev/config.yaml", PathType.RELATIVE_TO_RESOURCES)
         );
 
         String lastMsgUUID = null;
@@ -24,6 +27,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
         String userInput;
         while (true) {
+            // TODO: асинхронная работа с агентом, постепенное отображение процесса генерации
             System.out.print(">");
             userInput = input.nextLine();
             if ("/stop".equals(userInput)) break;

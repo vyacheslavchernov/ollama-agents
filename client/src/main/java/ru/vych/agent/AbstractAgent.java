@@ -1,7 +1,6 @@
 package ru.vych.agent;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import ru.vych.OllamaClient;
 import ru.vych.dto.rq.chat.ChatMessage;
@@ -27,8 +26,7 @@ public abstract class AbstractAgent implements Agent {
      * Основная модель, которая будет задействована для обработки запросов в ходе чата с агентом
      */
     @Getter
-    @Setter
-    protected Model model;
+    protected final Model model;
 
     /**
      * Набор инструментов, который доступен агенту.
@@ -37,17 +35,16 @@ public abstract class AbstractAgent implements Agent {
      * @see Model#getCapabilities()
      */
     @Getter
-    @Setter
-    protected List<ToolDefinition> toolset = null;
+    protected final List<ToolDefinition> toolset;
 
     @Getter
     protected final List<ChatMessage> messages = new ArrayList<>();
 
-    public AbstractAgent(OllamaClient client, Model model) {
+    public AbstractAgent(OllamaClient client, Model model, List<ToolDefinition> toolset) {
         this.client = client;
         this.model = model;
+        this.toolset = toolset;
     }
-
 
     public ChatResponse chat(String message) {
         messages.add(new ChatMessage(USER, message));
