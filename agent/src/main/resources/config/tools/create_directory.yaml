@@ -1,0 +1,11 @@
+tool:
+  alias: "create_directory"
+  name: "Create directory"
+  description: "Создать новый каталог. 
+  Перед созданием проверяется существует ли каталог"
+  parameters:
+    - parameter:
+        name: "dirPath"
+        type: "string"
+        description: "Абсолютный путь к файлу в формате системы"
+  method: "ru.vych.tools.FileTools#createDirectoryIfNotExists"

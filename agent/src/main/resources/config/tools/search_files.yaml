@@ -1,0 +1,23 @@
+tool:
+  alias: "search_files"
+  name: "Search files"
+  description: "Произвести поиск файлов и\\или каталогов в каталоге по паттерну в 
+      виде регулярного выражения. Можно производить рекурсивный поиск по вложенным каталогам. 
+      Ответ возвращается в формате json - {\"founded\": [file1.txt, file2.log], \"error\": \"\"}"
+  parameters:
+    - parameter:
+        name: "directoryPath"
+        type: "string"
+        description: "Путь к каталогу в котором нужно искать файлы. Обязательно убедись, 
+            что путь составлен корректно для системы пользователя"
+    - parameter:
+        name: "pattern"
+        type: "string"
+        description: "Паттерн имени файла или каталога для поиска в формате регулярного 
+            выражения формата Java. (не нужно указывать в паттерне абсолютный или относительный путь)"
+    - parameter:
+        name: "recursive"
+        type: "boolean"
+        description: "Нужно ли производить рекурсивный поиск по вложенным каталогам. 
+            Не используй рекурсивный поиск, если в этом нет явной необходимости"
+  method: "ru.vych.tools.FileTools#findFilesWithPattern"
