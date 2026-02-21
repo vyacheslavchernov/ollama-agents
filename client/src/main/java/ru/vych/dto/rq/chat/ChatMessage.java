@@ -7,6 +7,7 @@ import lombok.Setter;
 import ru.vych.dto.rq.chat.tool.ToolCall;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Класс представляющий отдельное сообщение в чате с моделью
@@ -14,6 +15,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ChatMessage {
+    private final String uuid = String.valueOf(UUID.randomUUID());
+
     /**
      * Роль от которой было написано сообщение
      */
