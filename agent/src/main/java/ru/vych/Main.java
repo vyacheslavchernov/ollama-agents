@@ -1,6 +1,7 @@
 package ru.vych;
 
-import ru.vych.agents.DevAgent;
+import ru.vych.agents.AgentConfig;
+import ru.vych.agents.ConfigurableAgent;
 import ru.vych.dto.rq.chat.ChatMessage;
 
 import java.util.Scanner;
@@ -9,10 +10,10 @@ public class Main {
     public static void main(String[] args) {
         var client = new OllamaClient();
 
-        // Получение первой доступной модели в Ollama с нужными возможностями
-        var model = client.getModelByName("qwen3:8b");
-
-        var agent = new DevAgent(client, model);
+        var agent = new ConfigurableAgent(
+                client,
+                AgentConfig.loadFromFile("config/agents/dev/config.yaml")
+        );
 
         String lastMsgUUID = null;
         for (var msg : agent.getMessages()) {
