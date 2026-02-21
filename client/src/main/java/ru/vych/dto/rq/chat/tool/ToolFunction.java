@@ -55,4 +55,13 @@ public class ToolFunction {
         this.parameters = parameters;
         this.function = function;
     }
+
+    @Override
+    public String toString() {
+        return "ToolFunction{" +
+                "name='" + name + '\'' +
+                ", arguments=" + arguments +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
