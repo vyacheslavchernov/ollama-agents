@@ -28,14 +28,10 @@ public class FileTools {
      * @return true, если операция выполнена успешно, иначе false
      */
     public static String overwriteFile(String filePath, String newContent) {
-        System.out.printf("=== TOOL CALL ===\nПерезапись файла `%s`. Будет перезаписано %s байт.\n", filePath, newContent.getBytes().length);
-
         try {
             Files.write(Paths.get(filePath), newContent.getBytes());
-            System.out.println("Успешно перезаписано\n\n\n");
             return "{status: Файл " + filePath + " успешно перезаписан}";
         } catch (IOException e) {
-            System.out.println("Ошибка при перезаписи файла: " + e.getMessage() + "\n\n\n");
             return "{status: Ошибка при перезаписи: " + e.getMessage() + "}";
         }
     }
@@ -49,7 +45,6 @@ public class FileTools {
      * @return JSON-строка формата {"founded": [...], "error": "..."}
      */
     public static String findFilesWithPattern(String directoryPath, String pattern, Boolean recursive) {
-        System.out.printf("=== TOOL CALL ===\nПоиск в каталоге `%s` по паттерну `%s`, recursive = %s\n", directoryPath, pattern, recursive);
         List<FileSearchResult> searchResults = search(directoryPath, pattern, recursive);
 
         List<String> foundedPaths = searchResults.stream()
@@ -65,10 +60,7 @@ public class FileTools {
         String foundedJson = "[" + String.join(", ", foundedPaths) + "]";
         String errorsJson = "[" + String.join(", ", searchErrors) + "]";
 
-        String finalJson = "{\"founded\":" + foundedJson + ", \"error\":" + errorsJson + "}";
-        System.out.println("Результаты поиска:\n" + finalJson + "\n\n\n");
-
-        return finalJson;
+        return "{\"founded\":" + foundedJson + ", \"error\":" + errorsJson + "}";
     }
 
     /**
@@ -79,7 +71,6 @@ public class FileTools {
      * @return строка с содержимым файла, или null в случае ошибки
      */
     public static String readTextFileToString(String filePath) {
-        System.out.printf("=== TOOL CALL ===\nЧтение файла %s\n\n\n", filePath);
         try {
             List<String> lines = Files.readAllLines(Paths.get(filePath));
             return "{\"file\": \"" + filePath + "\", \"content\": " + String.join("\n", lines) + "}";
@@ -96,11 +87,6 @@ public class FileTools {
      * @return true, если операция выполнена успешно, иначе false
      */
     public static String createFileIfNotExists(String filePath, String content) {
-        System.out.printf(
-                "=== TOOL CALL ===\nСоздание нового файла `%s`. Будет перезаписано %s байт.\n\n\n",
-                filePath, content.getBytes().length
-        );
-
         try {
             Path path = Paths.get(filePath);
             if (!Files.exists(path)) {
@@ -109,7 +95,6 @@ public class FileTools {
             }
             return "{status: Файл " + filePath + " уже существует. Запись не произведена}";
         } catch (IOException e) {
-            System.err.println("Ошибка при создании файла: " + e.getMessage());
             return "{\"error\": Ошибка при создании файла. Текст ошибки: " + e.getMessage() + "}";
         }
     }
@@ -121,24 +106,16 @@ public class FileTools {
      * @return JSON-строка со статусом или ошибкой
      */
     public static String createDirectoryIfNotExists(String directoryPath) {
-        System.out.printf(
-                "=== TOOL CALL ===\nСоздание каталога `%s`\n",
-                directoryPath
-        );
-
         try {
             Path path = Paths.get(directoryPath);
             if (!Files.exists(path)) {
                 Files.createDirectory(path);
-                System.out.printf("Каталог `%s` успешно создан.\n\n\n", directoryPath);
                 return "{status: Каталог " + directoryPath + " успешно создан}";
             } else {
-                System.out.printf("Каталог `%s` уже существует.\n\n\n", directoryPath);
                 return "{status: Каталог " + directoryPath + " уже существует}";
             }
 
         } catch (IOException e) {
-            System.err.println("Ошибка при создании каталога: " + e.getMessage() + "\n\n\n");
             return "{\"error\": Ошибка при создании каталога. Текст ошибки: " + e.getMessage() + "}";
         }
     }

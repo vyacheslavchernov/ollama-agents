@@ -11,6 +11,7 @@ import java.util.Locale;
  * Набор методов, которые используются агентами
  * как инструменты для работы с системой
  */
+@SuppressWarnings("unused")
 public class SystemTools {
     /**
      * Собирает и возвращает сводную информацию о системе на которой работает агент.
@@ -41,8 +42,6 @@ public class SystemTools {
         info.append("Язык: ").append(locale.getLanguage()).append("\n");
         info.append("Страна: ").append(locale.getCountry()).append("\n");
         info.append("Вариант: ").append(locale.getVariant()).append("\n");
-
-        System.out.printf("=== TOOL CALL ===\nЗапрос информации о системе. Получены следующие данные:\n%s", info);
 
         return info.toString();
     }

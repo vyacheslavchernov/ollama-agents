@@ -226,7 +226,7 @@ public class OllamaClient {
      * @see <a href="https://docs.ollama.com/api/chat">Api Reference</a>
      */
     public CompletableFuture<Stream<ChatResponse>> proceedAsyncChat(ChatRequestBody parameters) {
-        parameters.setStream(false);
+        parameters.setStream(true);
         return callApiAsync(CHAT_ENDPOINT, POST, ChatResponse.class, parameters);
     }
     //endregion
@@ -254,7 +254,6 @@ public class OllamaClient {
      * @param capabilities множество возможностей по которым должен произойти отбор
      * @return список моделей подходящий под условия
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Model> getModelsByCapabilities(Set<ModelCapabilities> capabilities) {
         return availableModels().getModels().stream()
                 .filter(model -> {

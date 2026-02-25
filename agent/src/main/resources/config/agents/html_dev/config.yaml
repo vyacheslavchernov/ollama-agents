@@ -1,16 +1,16 @@
-# Конфигурация агента разработчика
+# Конфигурация агента разработчика HTML5 игр
 agent:
   # Имя агента
-  name: "Developer"
+  name: "HTML5 Game Developer"
 
   # Описание функций агента
-  description: "Agent for write code, refactor and etc."
+  description: "Agent for write games in HTML5"
 
   # Модель, которая должна использоваться агентом
   model: "qwen3:8b"
 
   # Путь до системного промпта в папке ресурсов проекта
-  system_prompt: "config/agents/dev/system_prompt.md"
+  system_prompt: "config/agents/html_dev/system_prompt.md"
 
   # Набор инструментов, который доступен агенту
   toolset: [
