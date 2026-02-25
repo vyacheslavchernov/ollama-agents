@@ -1,0 +1,16 @@
+tool:
+  alias: "write_text_file"
+  name: "Write text file"
+  description: "Если файл уже существует, то его содержимое будет перезаписано.
+  Если файл не существует, то будет создан и записан переданными данными.
+  Ответ возвращается в формате JSON."
+  parameters:
+    - parameter:
+        name: "filePath"
+        type: "string"
+        description: "Абсолютный путь к файлу в формате системы"
+    - parameter:
+        name: "content"
+        type: "string"
+        description: "Новые данные, которыми будет перезаписан файл."
+  method: "ru.vych.tools.FileTools#writeFile"

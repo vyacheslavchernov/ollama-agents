@@ -1,6 +1,7 @@
 package ru.vych.agent.tools;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import ru.vych.agent.config.PathType;
 import ru.vych.agent.config.tools.ToolConfig;
 import ru.vych.agent.config.tools.ToolParameterConfig;
@@ -17,10 +18,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +26,7 @@ import java.util.regex.Pattern;
  * Реестр инструментов для агентов.
  * Инструменты готовы к использованию при получении через методы `get`.
  */
+@Slf4j
 public class ToolRegistry {
     private static final Map<String, ToolDefinition> REGISTRY = new HashMap<>();
     private static final Pattern yamlPattern = Pattern.compile(".yaml$");
@@ -39,6 +38,7 @@ public class ToolRegistry {
      */
     @SneakyThrows
     public static void scanResourcesForConfigs(String directory) {
+        log.debug("Scanning directory `{}` in resources for tool configs", directory);
         var absolutePath = ConfigUtils.class.getClassLoader().getResource(directory);
         if (absolutePath == null) {
             throw new IOException("Directory not found: " + directory);
@@ -50,6 +50,7 @@ public class ToolRegistry {
             directoryStream.forEach(entry -> {
                 Matcher matcher = yamlPattern.matcher(entry.getFileName().toString());
                 if (matcher.find()) {
+                    log.debug("Founded tool config `{}`", entry.toAbsolutePath());
                     loadToRegistry(
                             ToolConfig.loadFromFile(
                                     entry.toAbsolutePath().toString(),
@@ -68,11 +69,12 @@ public class ToolRegistry {
      */
     @SneakyThrows
     public static void loadToRegistry(ToolConfig config) {
+        log.debug("Register tool config to registry | {}", config);
         // Сборка пропов инструмента
-        // TODO: нужно переписать классы пропов, чтобы они нормально описывали json schema
+        // TODO: нужно(?) переписать классы пропов, чтобы они нормально описывали json schema
         boolean hasProps = config.getToolParameterConfigs() != null;
         ToolParameters toolParameters = new ToolParameters();
-        List<Class<?>> parameterTypes = new ArrayList<>();
+        List<Class<?>> parameterTypes = new LinkedList<>();
 
         if (hasProps) {
             for (ToolParameterConfig prop : config.getToolParameterConfigs()) {
@@ -103,6 +105,7 @@ public class ToolRegistry {
                     try {
                         clazz = Class.forName(methodSplit[0]);
                     } catch (ClassNotFoundException e) {
+                        log.error("Got exception reflection", e);
                         throw new RuntimeException(e);
                     }
 
@@ -115,13 +118,22 @@ public class ToolRegistry {
                             method = clazz.getDeclaredMethod(methodSplit[1]);
                         }
                     } catch (NoSuchMethodException e) {
+                        log.error("Got exception reflection", e);
                         throw new RuntimeException(e);
                     }
 
                     // Вызов метода инструмента с нужными параметрами
                     try {
-                        return method.invoke(null, params.values().toArray()).toString();
+                        List<Object> invokeParams = new LinkedList<>();
+                        if (hasProps) {
+                            for (var toolParam : config.getToolParameterConfigs()) {
+                                invokeParams.add(params.get(toolParam.getName()));
+                            }
+                        }
+
+                        return method.invoke(null, invokeParams.toArray()).toString();
                     } catch (IllegalAccessException | InvocationTargetException e) {
+                        log.error("Got exception reflection", e);
                         throw new RuntimeException(e);
                     }
                 }

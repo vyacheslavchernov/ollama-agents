@@ -12,5 +12,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class FileSearchResult {
     private String filePath;
-    private String occurredErrorMessage;
+    private Exception occurredException;
 }

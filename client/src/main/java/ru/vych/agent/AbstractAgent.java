@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import ru.vych.OllamaClient;
 import ru.vych.dto.rq.chat.ChatMessage;
 import ru.vych.dto.rq.chat.ChatRequestBody;
@@ -26,6 +27,7 @@ import static ru.vych.dto.rq.chat.Role.*;
 /**
  * Абстрактная реализация интерфейса агента от которой можно наследовать своих агентов.
  */
+@Slf4j
 @Accessors(chain = true)
 public abstract class AbstractAgent implements Agent {
     private final OllamaClient client;
@@ -90,10 +92,12 @@ public abstract class AbstractAgent implements Agent {
         this.client = client;
         this.model = model;
         this.toolset = toolset;
+        log.debug("Agent [{}] | Instantiated ", this);
     }
 
     @Override
     public ChatResponse chat(String message) {
+        log.debug("Agent [{}] | Got message `{}`", this, message);
         checkBeforeRunTask();
         working = true;
         generationStage = STARTED;
@@ -126,6 +130,7 @@ public abstract class AbstractAgent implements Agent {
     @Override
     @SneakyThrows
     public CompletableFuture<ChatResponse> chatAsync(String message) {
+        log.debug("Agent [{}] | Got async message `{}`", this, message);
         checkBeforeRunTask();
         working = true;
         try {
@@ -167,6 +172,7 @@ public abstract class AbstractAgent implements Agent {
 
     @Override
     public void system(String prompt) {
+        log.debug("Agent [{}] | Got system prompt `{}`", this, prompt);
         messages.add(new ChatMessage(SYSTEM, prompt));
     }
 
@@ -177,12 +183,17 @@ public abstract class AbstractAgent implements Agent {
      * @param call вызов инструмента
      */
     private void callTool(ToolCall call) {
+        log.debug("Agent [{}] | Got tool call `{}`", this, call);
         toolset.stream()
                 .filter(toolDefinition ->
                         toolDefinition.getFunction().getName().equals(call.getFunction().getName())
                 )
                 .findFirst().ifPresent(toolDefinition -> {
                             var result = toolDefinition.getFunction().getFunction().apply(call.getFunction().getArguments());
+                            log.debug(
+                                    "Agent [{}] | Got result on tool call with id [{}] | Result [{}]",
+                                    this, call.getId(), result
+                            );
                             if (toolInvokeCallback != null) {
                                 toolInvokeCallback.accept(toolDefinition, result);
                             }

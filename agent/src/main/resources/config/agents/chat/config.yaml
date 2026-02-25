@@ -7,12 +7,12 @@ agent:
   description: "Agent with minimal config. Ready for conversation"
 
   # Модель, которая должна использоваться агентом
-  model: "qwen3:8b"
+  model: "qwen3:4b"
 
   # Путь до системного промпта в папке ресурсов проекта
   system_prompt: "config/agents/chat/system_prompt.md"
 
   # Набор инструментов, который доступен агенту
   toolset: [
-    "system_info"
+    "system_info", "search_files", "read_text_file", "write_text_file"
   ]

@@ -1,5 +1,9 @@
 package ru.vych.tools;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.vych.agent.tools.ToolJsonResponseWrapper;
 import ru.vych.tools.entities.FileSearchResult;
 
 import java.io.IOException;
@@ -9,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,22 +23,32 @@ import java.util.regex.Pattern;
  * как инструменты для работы с файловой системой
  */
 @SuppressWarnings("unused")
+@Slf4j
 public class FileTools {
 
     /**
      * Перезаписывает содержимое файла новым содержимым.
+     * Если файл не существует, то создаётся новый.
      *
-     * @param filePath   Путь к файлу
-     * @param newContent Новое содержимое файла (список строк)
-     * @return true, если операция выполнена успешно, иначе false
+     * @param filePath Путь к файлу
+     * @param content  Содержимое файла в виде строки
+     * @return json со статусом выполнения операции
      */
-    public static String overwriteFile(String filePath, String newContent) {
+    public static String writeFile(String filePath, String content) {
+        var response = new ToolJsonResponseWrapper("write_text_file", Map.of(
+                "filePath", filePath,
+                "content", "<NOT_DISPLAYED_FOR_CONTEXT_SAVING>"
+        ));
+
         try {
-            Files.write(Paths.get(filePath), newContent.getBytes());
-            return "{status: Файл " + filePath + " успешно перезаписан}";
+            Files.write(Paths.get(filePath), content.getBytes());
+            response.addContent("status", String.format("Файл `%s` успешно записан. Записано %s байт", filePath, content.getBytes().length));
         } catch (IOException e) {
-            return "{status: Ошибка при перезаписи: " + e.getMessage() + "}";
+            log.error("Got exception on file writing", e);
+            response.addError(e);
         }
+
+        return response.json();
     }
 
     /**
@@ -42,9 +57,15 @@ public class FileTools {
      * @param directoryPath путь к каталогу
      * @param pattern       регулярное выражение для поиска
      * @param recursive     флаг рекурсивного поиска
-     * @return JSON-строка формата {"founded": [...], "error": "..."}
+     * @return json с результатами поиска
      */
     public static String findFilesWithPattern(String directoryPath, String pattern, Boolean recursive) {
+        var result = new ToolJsonResponseWrapper("search_files", Map.of(
+                "directoryPath", directoryPath,
+                "pattern", pattern,
+                "recursive", recursive
+        ));
+
         List<FileSearchResult> searchResults = search(directoryPath, pattern, recursive);
 
         List<String> foundedPaths = searchResults.stream()
@@ -52,15 +73,15 @@ public class FileTools {
                 .filter(Objects::nonNull)
                 .toList();
 
-        List<String> searchErrors = searchResults.stream()
-                .map(FileSearchResult::getOccurredErrorMessage)
+        List<Exception> searchErrors = searchResults.stream()
+                .map(FileSearchResult::getOccurredException)
                 .filter(Objects::nonNull)
                 .toList();
 
-        String foundedJson = "[" + String.join(", ", foundedPaths) + "]";
-        String errorsJson = "[" + String.join(", ", searchErrors) + "]";
+        result.addContent("founded", foundedPaths);
+        result.addError(searchErrors.toArray(new Exception[0]));
 
-        return "{\"founded\":" + foundedJson + ", \"error\":" + errorsJson + "}";
+        return result.json();
     }
 
     /**
@@ -68,58 +89,66 @@ public class FileTools {
      * и возвращает эту строку.
      *
      * @param filePath путь к файлу
-     * @return строка с содержимым файла, или null в случае ошибки
+     * @return json с содержимым файла, если он был найден
      */
     public static String readTextFileToString(String filePath) {
+        var result = new ToolJsonResponseWrapper("read_text_file", Map.of(
+                "filePath", filePath
+        ));
+
         try {
             List<String> lines = Files.readAllLines(Paths.get(filePath));
-            return "{\"file\": \"" + filePath + "\", \"content\": " + String.join("\n", lines) + "}";
+            result.addContent("file_content", String.join("\n", lines));
         } catch (IOException e) {
-            return "{\"error\": Ошибка при чтении файла. Текст ошибки: " + e.getMessage() + "}";
+            log.error("Got exception on file reading", e);
+            result.addError(e);
         }
-    }
 
-    /**
-     * Проверяет наличие файла. Если файла нет, создает его и записывает контент.
-     *
-     * @param filePath Путь к файлу
-     * @param content  Список строк для записи в файл
-     * @return true, если операция выполнена успешно, иначе false
-     */
-    public static String createFileIfNotExists(String filePath, String content) {
-        try {
-            Path path = Paths.get(filePath);
-            if (!Files.exists(path)) {
-                Files.write(path, content.getBytes());
-                return "{status: Файл " + filePath + " успешно создан}";
-            }
-            return "{status: Файл " + filePath + " уже существует. Запись не произведена}";
-        } catch (IOException e) {
-            return "{\"error\": Ошибка при создании файла. Текст ошибки: " + e.getMessage() + "}";
-        }
+        return result.json();
     }
 
     /**
      * Проверяет существование каталога. Если каталог не существует, создает его.
      *
      * @param directoryPath Путь к каталогу
-     * @return JSON-строка со статусом или ошибкой
+     * @return json со статусом выполнения операции
      */
     public static String createDirectoryIfNotExists(String directoryPath) {
+        var result = new ToolJsonResponseWrapper("create_directory", Map.of(
+                "directoryPath", directoryPath
+        ));
+
+        if (directoryPath.isEmpty() || directoryPath == null) {
+            result.addError(new IllegalArgumentException("Путь к директории не может быть пустым или null"));
+            return result.json();
+        }
+
         try {
             Path path = Paths.get(directoryPath);
             if (!Files.exists(path)) {
                 Files.createDirectory(path);
-                return "{status: Каталог " + directoryPath + " успешно создан}";
+                result.addContent("status", String.format("Каталог `%s` успешно создан.", directoryPath));
             } else {
-                return "{status: Каталог " + directoryPath + " уже существует}";
+                result.addError(new IllegalArgumentException("Каталог `" + directoryPath + "` уже существует"));
             }
 
         } catch (IOException e) {
-            return "{\"error\": Ошибка при создании каталога. Текст ошибки: " + e.getMessage() + "}";
+            log.error("Got exception on directory creating", e);
+            result.addError(e);
         }
+
+        return result.json();
     }
 
+    /**
+     * Поиск файлов и каталогов.
+     *
+     * @param directoryPath начальная точка поиска
+     * @param pattern regexp паттерн для поиска
+     * @param recursive флаг для поиска по вложенным каталогам
+     * @return список результатов поиска, которые либо содержат путь до файла\каталога,
+     * либо возникшую во время поиска ошибку
+     */
     private static List<FileSearchResult> search(String directoryPath, String pattern, boolean recursive) {
         try {
             Path directory = Paths.get(directoryPath);
@@ -154,19 +183,21 @@ public class FileTools {
                         }
                     }
                 } catch (Exception e) {
-                    return List.of(new FileSearchResult(null, e.getMessage()));
+                    log.error("Got exception on search", e);
+                    return List.of(new FileSearchResult(null, e));
                 }
             }
 
             return foundFiles;
 
         } catch (Exception e) {
-            return List.of(new FileSearchResult(null, e.getMessage()));
+            log.error("Got exception on search", e);
+            return List.of(new FileSearchResult(null, e));
         }
     }
 
     private static boolean matchesPattern(String fileName, Pattern pattern) {
         Matcher matcher = pattern.matcher(fileName);
-        return matcher.matches();
+        return matcher.find();
     }
 }

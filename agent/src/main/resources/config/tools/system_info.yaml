@@ -2,6 +2,7 @@ tool:
   alias: "system_info"
   name: "System info"
   description: "Получить информацию о окружении и системе, 
-  а именно тип ОС, активного пользователя, домашнюю папку, 
-  разделители, время, локаль и другие."
+  а именно os_name, user_name, user_home, file_system_separator,
+  file_system_path_separator, java_version, local_datetime, timezone,
+  language, country, variant. Ответ возвращается в формате JSON."
   method: "ru.vych.tools.SystemTools#collectSystemInfo"

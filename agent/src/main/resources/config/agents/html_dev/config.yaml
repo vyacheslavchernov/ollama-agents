@@ -14,6 +14,6 @@ agent:
 
   # Набор инструментов, который доступен агенту
   toolset: [
-    "search_files", "read_text_file", "overwrite_text_file",
-    "create_and_write_text_file", "create_directory", "system_info"
+    "search_files", "read_text_file", "write_text_file",
+    "create_directory", "system_info"
   ]

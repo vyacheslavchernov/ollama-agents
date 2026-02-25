@@ -2,7 +2,7 @@ tool:
   alias: "create_directory"
   name: "Create directory"
   description: "Создать новый каталог. 
-  Перед созданием проверяется существует ли каталог"
+  Перед созданием проверяется существует ли каталог. Ответ возвращается в формате JSON."
   parameters:
     - parameter:
         name: "dirPath"
