@@ -2,6 +2,8 @@ package ru.vych.agent;
 
 import ru.vych.dto.rs.chat.ChatResponse;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Интерфейс агента с возможностью чата и использования инструментов.
  */
@@ -11,9 +13,17 @@ public interface Agent {
      *
      * @param message текст сообщения
      * @return сгенерированный ответ от агента.
-     * Может быть текстовым ответом или вызовом инструмента (если таковые имеются)
      */
     ChatResponse chat(String message);
+
+    /**
+     * Отправить сообщение в чат с агентом от роли {@link ru.vych.dto.rq.chat.Role#USER}
+     *
+     * @param message текст сообщения
+     * @return сгенерированный ответ от агента обёрнутый в {@link CompletableFuture}.
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    CompletableFuture<ChatResponse> chatAsync(String message);
 
     /**
      * Отправить сообщение в чат с агентом от роли {@link ru.vych.dto.rq.chat.Role#SYSTEM}
