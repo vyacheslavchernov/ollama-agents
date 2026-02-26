@@ -23,4 +23,9 @@ public class ToolDefinition {
     public ToolDefinition(ToolFunction function) {
         this.function = function;
     }
+
+    @Override
+    public String toString() {
+        return function.getName();
+    }
 }

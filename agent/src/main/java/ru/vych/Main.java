@@ -12,11 +12,11 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
-    // todo: правка ответов в тулзах
-    // todo: нормальное покрытие логами
-    // todo: нормальные текстовки ошибок
     // todo: webfetch
     // todo: подумать над доп. тулзами
+    // todo: сохранение истории чатов
+    // todo: сжатие контекста, общая\личная долгосрочная память
+    // todo: суб-агенты
 
 
     @SneakyThrows
@@ -26,7 +26,7 @@ public class Main {
 
         var agent = new ConfigurableAgent(
                 client,
-                AgentConfig.loadFromFile("config/agents/html_dev/config.yaml", PathType.RELATIVE_TO_RESOURCES)
+                AgentConfig.loadFromFile("config/agents/dev/config.yaml", PathType.RELATIVE_TO_RESOURCES)
         );
 //        agent.setMessagesUpdateCallback(Main::printMsg);
         agent.setAsyncChatResponseGenerationCallback((chatResponse, generationStep) -> {

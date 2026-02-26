@@ -73,7 +73,7 @@ public class OllamaClient {
     public OllamaClient() {
         ollamaUrl = String.format(OLLAMA_URL_PATTERN, DEFAULT_OLLAMA_PROTOCOL, DEFAULT_OLLAMA_HOST, DEFAULT_OLLAMA_PORT);
         httpClient = HttpClient.newHttpClient();
-        log.debug("Created default Ollama client for {}", ollamaUrl);
+        log.debug("Client [{}] | Instantiated for default URL `{}`", this, ollamaUrl);
     }
 
     /**
@@ -82,7 +82,7 @@ public class OllamaClient {
     public OllamaClient(String protocol, String host, String port) {
         ollamaUrl = String.format(OLLAMA_URL_PATTERN, protocol, host, port);
         httpClient = HttpClient.newHttpClient();
-        log.debug("Created Ollama client for {}", ollamaUrl);
+        log.debug("Client [{}] | Instantiated for custom URL `{}`", this, ollamaUrl);
     }
 
     //region VERSION_ENDPOINT
@@ -350,13 +350,13 @@ public class OllamaClient {
         var rs = httpClient.send(rq, HttpResponse.BodyHandlers.ofString());
 
         if (responseDto.equals(HttpCodeResponse.class)) {
-            log.debug("Got response from [{}] with code {}", uri, rs.statusCode());
+            log.debug("Client [{}] | Got response from [{}] with code {}", this, uri, rs.statusCode());
             //noinspection unchecked
             return (T) new HttpCodeResponse(rs.statusCode());
         }
 
         T rsDto = mapper.readValue(rs.body(), responseDto);
-        log.debug("Got response from [{}] with code {} : {}", uri, rs.statusCode(), mapper.writeValueAsString(rsDto));
+        log.debug("Client [{}] | Got response from [{}] with code {} : {}", this, uri, rs.statusCode(), mapper.writeValueAsString(rsDto));
         return rsDto;
     }
 
@@ -381,9 +381,10 @@ public class OllamaClient {
                                 .map(line -> {
                                     try {
                                         T rsDto = mapper.readValue(line, responseDto);
-                                        log.debug("Got partial response from [{}] : {}", uri, mapper.writeValueAsString(rsDto));
+                                        log.debug("Client [{}] | Got partial response from [{}] : {}", this, uri, mapper.writeValueAsString(rsDto));
                                         return rsDto;
                                     } catch (Exception e) {
+                                        log.error("Got exception on API call", e);
                                         throw new RuntimeException("Failed to parse line: " + line, e);
                                     }
                                 })
@@ -402,7 +403,7 @@ public class OllamaClient {
     @SneakyThrows
     private HttpRequest buildRequest(URI uri, HttpMethods method, boolean async, ApiRequestDTO... payload) {
         var rqBody = payload.length == 0 ? "" : mapper.writeValueAsString(payload[0]);
-        log.debug("Sending {} {} request on [{}] with payload: {}", async ? "async" : "", method, uri, rqBody);
+        log.debug("Client [{}] | Sending {} {} request on [{}] with payload: {}", this, async ? "async" : "", method, uri, rqBody);
         var rq = HttpRequest.newBuilder(uri);
         switch (method) {
             case GET -> rq.GET();

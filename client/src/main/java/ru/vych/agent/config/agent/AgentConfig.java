@@ -7,6 +7,7 @@ import ru.vych.agent.config.PathType;
 import ru.vych.agent.tools.ToolRegistry;
 import ru.vych.agent.utils.ConfigUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -65,5 +66,15 @@ public class AgentConfig {
                 (String) agentData.get("system_prompt"),
                 ((List<String>) agentData.get("toolset")).toArray(new String[0])
         );
+    }
+
+    @Override
+    public String toString() {
+        return "AgentConfig{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", model='" + model + '\'' +
+                ", toolset=" + Arrays.toString(toolset) +
+                '}';
     }
 }

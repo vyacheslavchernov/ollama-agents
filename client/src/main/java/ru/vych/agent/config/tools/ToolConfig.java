@@ -2,17 +2,19 @@ package ru.vych.agent.config.tools;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 import ru.vych.agent.config.PathType;
 import ru.vych.agent.utils.ConfigUtils;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Класс конфигурации для инструмента агента.
  */
+@Slf4j
 @Getter
 @AllArgsConstructor
 public class ToolConfig {
@@ -31,13 +33,14 @@ public class ToolConfig {
         String yamlContent = pathType == PathType.RELATIVE_TO_RESOURCES
                 ? ConfigUtils.readFileContentFromResources(path)
                 : ConfigUtils.readFileContentFromAbsolutePath(path);
+        log.debug("Reading config from path `{}`", path);
         Yaml yaml = new Yaml();
         Map<String, Object> data = yaml.load(yamlContent);
         Map<String, Object> toolData = (Map<String, Object>) data.get("tool");
 
         List<ToolParameterConfig> loadedToolParams = null;
         if (toolData.get("parameters") != null) {
-            loadedToolParams = new ArrayList<>();
+            loadedToolParams = new LinkedList<>();
             for (var paramMap : (List<Map<String, Object>>) toolData.get("parameters")) {
                 var param = (Map<String, String>) paramMap.get("parameter");
                 loadedToolParams.add(new ToolParameterConfig(
