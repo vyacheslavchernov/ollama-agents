@@ -4,12 +4,12 @@ import ru.vych.agent.tools.ToolJsonResponseWrapper;
 
 import java.io.File;
 import java.nio.file.FileSystems;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static ru.vych.agent.utils.DateTimeUtils.getFormattedActualTime;
 
 /**
  * Набор методов, которые используются агентами
@@ -23,7 +23,6 @@ public class SystemTools {
      * @return сводная информация о системе
      */
     public static String collectSystemInfo() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Locale locale = Locale.getDefault();
 
         var response = new ToolJsonResponseWrapper("system_info", new HashMap<>())
@@ -36,7 +35,7 @@ public class SystemTools {
                         "java_version", System.getProperty("java.version")
                 ))
                 .addContent("datetime", Map.of(
-                        "local_datetime", LocalDateTime.now().format(formatter),
+                        "local_datetime", getFormattedActualTime(),
                         "timezone", ZoneId.systemDefault().getId()
                 ))
                 .addContent("locale", Map.of(

@@ -45,6 +45,11 @@ public class AgentConfig {
     private String[] toolset;
 
     /**
+     * Путь до файла с конфигурацией
+     */
+    private String configPath;
+
+    /**
      * @param path     путь до конфига в папке ресурсов
      * @param pathType тип пути (относительно папки ресурсов или абсолютный)
      * @return экземпляр конфига загруженный из файла
@@ -64,7 +69,8 @@ public class AgentConfig {
                 (String) agentData.get("description"),
                 (String) agentData.get("model"),
                 (String) agentData.get("system_prompt"),
-                ((List<String>) agentData.get("toolset")).toArray(new String[0])
+                ((List<String>) agentData.get("toolset")).toArray(new String[0]),
+                path
         );
     }
 

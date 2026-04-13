@@ -1,19 +1,18 @@
-# Конфигурация агента разработчика HTML5 игр
+# Конфигурация агента аналитика для составления анализа задач и плана работ
 agent:
   # Имя агента
-  name: "HTML5 Game Developer"
+  name: "Documentation agent"
 
   # Описание функций агента
-  description: "Agent for write games in HTML5"
+  description: "Agent for analyze code and generate documentation"
 
   # Модель, которая должна использоваться агентом
-  model: "qwen3:8b"
+  model: "qwen3.5:9b"
 
   # Путь до системного промпта в папке ресурсов проекта
-  system_prompt: "config/agents/html_dev/system_prompt.md"
+  system_prompt: "config/agents/docs/system_prompt.md"
 
   # Набор инструментов, который доступен агенту
   toolset: [
-    "search_files", "read_text_file", "write_text_file",
-    "create_directory", "system_info"
+    "search_files", "read_text_file", "write_text_file"
   ]

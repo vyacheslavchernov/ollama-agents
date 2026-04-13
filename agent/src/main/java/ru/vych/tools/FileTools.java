@@ -1,10 +1,8 @@
 package ru.vych.tools;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.vych.agent.tools.ToolJsonResponseWrapper;
-import ru.vych.tools.entities.FileSearchResult;
+import ru.vych.tools.file.FileSearchResult;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -144,8 +142,8 @@ public class FileTools {
      * Поиск файлов и каталогов.
      *
      * @param directoryPath начальная точка поиска
-     * @param pattern regexp паттерн для поиска
-     * @param recursive флаг для поиска по вложенным каталогам
+     * @param pattern       regexp паттерн для поиска
+     * @param recursive     флаг для поиска по вложенным каталогам
      * @return список результатов поиска, которые либо содержат путь до файла\каталога,
      * либо возникшую во время поиска ошибку
      */

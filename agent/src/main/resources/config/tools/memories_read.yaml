@@ -1,0 +1,5 @@
+tool:
+  alias: "memories_read"
+  name: "Read memories"
+  description: "Получить все доступные воспоминания"
+  method: "ru.vych.tools.MemoryTools#readMemories"

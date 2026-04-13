@@ -1,0 +1,11 @@
+tool:
+  alias: "memories_add"
+  name: "Adding memories"
+  description: "Добавить запись в файл с мета-воспоминаниями, которые доступны между чатами."
+  parameters:
+    - parameter:
+        name: "content"
+        type: "string"
+        description: "Информация, которую нужно добавить в воспоминания. Используй markdown форматирование, 
+        заканчивай воспоминание горизонтальной чертой. Будь краток в воспоминаниях, но не упускай важных деталей."
+  method: "ru.vych.tools.MemoryTools#appendToMemories"
