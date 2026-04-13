@@ -1,0 +1,5 @@
+tool:
+  alias: "get_balance"
+  name: "Get balance"
+  description: "Получить текущий баланс карты"
+  method: "ru.vych.chat.CardTools#getBalance"

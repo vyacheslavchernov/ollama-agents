@@ -1,0 +1,10 @@
+tool:
+  alias: "deposit"
+  name: "Card deposit"
+  description: "Пополнить баланс карты"
+  parameters:
+    - parameter:
+        name: "amount"
+        type: "integer"
+        description: "Сумма пополнения"
+  method: "ru.vych.chat.CardTools#deposit"
