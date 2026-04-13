@@ -1,0 +1,10 @@
+tool:
+  alias: "withdraw"
+  name: "Card withdraw"
+  description: "Списать деньги с баланса карты"
+  parameters:
+    - parameter:
+        name: "amount"
+        type: "integer"
+        description: "Сумма списания"
+  method: "ru.vych.chat.CardTools#withdraw"

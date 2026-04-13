@@ -1,0 +1,17 @@
+agent:
+  # Имя агента
+  name: "Bank agent"
+
+  # Описание функций агента
+  description: "Bank agent for management card balance"
+
+  # Модель, которая должна использоваться агентом
+  model: "qwen3.5:4b"
+
+  # Путь до системного промпта в папке ресурсов проекта
+  system_prompt: "config/agents/bank/system_prompt.md"
+
+  # Набор инструментов, который доступен агенту
+  toolset: [
+    "get_balance", "deposit", "withdraw"
+  ]
