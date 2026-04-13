@@ -176,6 +176,11 @@ public abstract class AbstractAgent implements Agent {
         messages.add(new ChatMessage(SYSTEM, prompt));
     }
 
+    @Override
+    public void clearMessages() {
+        messages.removeIf(message -> message.getRole() != SYSTEM);
+    }
+
     /**
      * Запустить инструмент запрошенный моделью
      * и добавить результат его работы в сообщения чата с агентом.
@@ -218,6 +223,10 @@ public abstract class AbstractAgent implements Agent {
 
         // Последовательно обрабатываем частичные ответы
         stream.forEach(rs -> {
+            if (rs.getError() != null) {
+                throw new RuntimeException("Error on generation: " + rs.getError());
+            }
+
             if (rs.isDone()) {
                 generationStage = DONE;
             }

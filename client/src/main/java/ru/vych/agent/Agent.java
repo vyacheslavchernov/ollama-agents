@@ -31,4 +31,10 @@ public interface Agent {
      * @param message текст сообщения
      */
     void system(String message);
+
+    /**
+     * Удалить все сообщения, кроме тех,
+     * что были отправлены от роли {@link ru.vych.dto.rq.chat.Role#SYSTEM}
+     */
+    void clearMessages();
 }

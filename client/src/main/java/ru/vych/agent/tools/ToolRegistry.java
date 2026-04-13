@@ -86,6 +86,9 @@ public class ToolRegistry {
                     case "boolean":
                         parameterTypes.add(Boolean.class);
                         break;
+                    case "integer":
+                        parameterTypes.add(Integer.class);
+                        break;
                     default:
                         throw new ConfigurationException("Wrong tool parameter type: Can't use " + prop.getType());
                 }

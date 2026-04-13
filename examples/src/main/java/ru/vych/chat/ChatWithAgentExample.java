@@ -13,25 +13,25 @@ import static ru.vych.dto.rs.model.ModelCapabilities.TOOLS;
  */
 public class ChatWithAgentExample {
     public static void main(String[] args) {
-        // Создание клиента
-        var client = new OllamaClient();
-
-        // Получение первой доступной модели в Ollama с нужными возможностями
-        var model = client.getModelsByCapabilities(Set.of(TOOLS, COMPLETION)).getFirst();
-
-        // Создание кастомного агента
-        var bankAgent = new BankAgent(client, model);
-
-        // Отправляем запросы в чат с агентом
-        bankAgent.chat("Спиши со счёта 50 рублей");
-        bankAgent.chat("Зачисли на счёт 150 рублей");
-        bankAgent.chat("Вычти со счёта 500000 рублей");
-
-
-        bankAgent.getMessages().forEach(msg -> System.out.printf(
-                        "\n=======================================\n<think>%s</think>\n\n<content>%s</content>\n",
-                        msg.getThinking(), msg.getContent()
-                )
-        );
+//        // Создание клиента
+//        var client = new OllamaClient();
+//
+//        // Получение первой доступной модели в Ollama с нужными возможностями
+//        var model = client.getModelsByCapabilities(Set.of(TOOLS, COMPLETION)).getFirst();
+//
+//        // Создание кастомного агента
+//        var bankAgent = new BankAgent(client, model);
+//
+//        // Отправляем запросы в чат с агентом
+//        bankAgent.chat("Спиши со счёта 50 рублей");
+//        bankAgent.chat("Зачисли на счёт 150 рублей");
+//        bankAgent.chat("Вычти со счёта 500000 рублей");
+//
+//
+//        bankAgent.getMessages().forEach(msg -> System.out.printf(
+//                        "\n=======================================\n<think>%s</think>\n\n<content>%s</content>\n",
+//                        msg.getThinking(), msg.getContent()
+//                )
+//        );
     }
 }

@@ -1,19 +1,19 @@
-# Конфигурация агента разработчика
+# Конфигурация агента промпт-инженера
 agent:
   # Имя агента
-  name: "Developer"
+  name: "Prompt engineering agent"
 
   # Описание функций агента
-  description: "Agent for write code, refactor and etc."
+  description: "Agent for creating prompts"
 
   # Модель, которая должна использоваться агентом
   model: "qwen3.5:4b"
 
   # Путь до системного промпта в папке ресурсов проекта
-  system_prompt: "config/agents/dev/system_prompt.md"
+  system_prompt: "config/agents/prompter/system_prompt.md"
 
   # Набор инструментов, который доступен агенту
   toolset: [
     "search_files", "read_text_file", "write_text_file",
-    "create_directory", "system_info"
+    "web_search", "fetch_page", "system_info"
   ]

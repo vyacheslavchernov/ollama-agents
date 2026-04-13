@@ -1,18 +1,19 @@
 # Конфигурация минимального чат-бот агента
 agent:
   # Имя агента
-  name: "Minimal agent"
+  name: "Minimal chat-bot agent"
 
   # Описание функций агента
-  description: "Agent with minimal config. Ready for conversation"
+  description: "Chat-bot agent. Ready for conversation"
 
   # Модель, которая должна использоваться агентом
-  model: "qwen3:4b"
+  model: "qwen3.5:4b"
 
   # Путь до системного промпта в папке ресурсов проекта
   system_prompt: "config/agents/chat/system_prompt.md"
 
   # Набор инструментов, который доступен агенту
   toolset: [
-    "system_info", "search_files", "read_text_file", "write_text_file"
+    "system_info", "search_files", "read_text_file",
+    "web_search", "fetch_page", "memories_add", "memories_read"
   ]

@@ -1,0 +1,17 @@
+tool:
+  alias: "web_search"
+  name: "Web Search"
+  description: "Произвести поиск по веб-страницам с помощью DuckDuckGo. 
+    Возвращает список результатов с заголовком, ссылкой и описанием. 
+    По возможности используй поисковые операторы, например `site:example.com`, `-слово`, `related:site.com` 
+    и другие для наиболее эффективного поиска, когда это возможно."
+  parameters:
+    - parameter:
+        name: "query"
+        type: "string"
+        description: "Запрос для поиска. Текст должен быть корректно кодирован в UTF-8."
+    - parameter:
+        name: "maxResults"
+        type: "integer"
+        description: "Максимальное количество результатов для возврата (обычно от 3 до 20)."
+  method: "ru.vych.tools.WebTools#webSearch"
